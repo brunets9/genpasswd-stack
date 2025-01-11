@@ -9,30 +9,45 @@ def password_quality_checker(password):
     score = 0
     feedback = []
 
-    if len(password) >= 8:
+    # Evaluar longitud de la contraseña
+    if len(password) >= 12:
+        score += 3
+    elif len(password) >= 8:
         score += 2
+    elif len(password) >= 6:
+        score += 1
     else:
-        feedback.append("La contraseña es demasiado corta (menos de 8 caracteres).")
+        feedback.append("La contraseña es demasiado corta (menos de 6 caracteres).")
 
+    # Evaluar mayúsculas
     if re.search(r'[A-Z]', password):
         score += 2
     else:
         feedback.append("La contraseña no contiene letras mayúsculas.")
 
+    # Evaluar minúsculas
     if re.search(r'[a-z]', password):
         score += 2
     else:
         feedback.append("La contraseña no contiene letras minúsculas.")
 
+    # Evaluar dígitos
     if re.search(r'[0-9]', password):
         score += 2
     else:
         feedback.append("La contraseña no contiene dígitos.")
 
+    # Evaluar caracteres especiales
     if re.search(r'[\W_]', password):
         score += 2
     else:
         feedback.append("La contraseña no contiene caracteres especiales (e.g., @, #, $, etc.).")
+
+    # Limitar la calidad de contraseñas muy cortas
+    if len(password) < 8:
+        score = min(score, 4)  # Contraseñas con 6 o 7 caracteres no pueden superar "Floja"
+    if len(password) < 6:
+        score = 2  # Contraseñas de menos de 6 caracteres siempre serán "Muy flojas"
 
     return score, feedback
 
@@ -40,23 +55,23 @@ def show_password_quality(score):
     if score <= 2:
         quality = "Muy floja"
         color = Fore.RED
-        bar = "[■□□□□]"  
-    elif score == 4:
+        bar = "[■□□□□]"
+    elif score <= 4:
         quality = "Floja"
         color = Fore.YELLOW
         bar = "[■■□□□]"
-    elif score == 6:
+    elif score <= 6:
         quality = "Normal"
         color = Fore.CYAN
         bar = "[■■■□□]"
-    elif score == 8:
-        quality = "Buena"
-        color = Fore.GREEN
-        bar = "[■■■■□]"
-    else:
+    elif score >= 9:
         quality = "Muy buena"
         color = Fore.GREEN
         bar = "[■■■■■]"
+    else:
+        quality = "Buena"
+        color = Fore.GREEN
+        bar = "[■■■■□]"
 
     print(f"\nCalidad de la contraseña: {color}{quality} {bar}{Style.RESET_ALL}")
 
