@@ -43,11 +43,11 @@ def password_quality_checker(password):
     else:
         feedback.append("La contraseña no contiene caracteres especiales (e.g., @, #, $, etc.).")
 
-    # Limitar la calidad de contraseñas muy cortas
-    if len(password) < 8:
-        score = min(score, 4)  # Contraseñas con 6 o 7 caracteres no pueden superar "Floja"
+    # Limitar la calidad de contraseñas cortas
     if len(password) < 6:
-        score = 2  # Contraseñas de menos de 6 caracteres siempre serán "Muy flojas"
+        score = min(score, 2)  # Contraseñas con menos de 6 caracteres no pueden superar "Muy floja"
+    elif len(password) < 8:
+        score = min(score, 4)  # Contraseñas de 6-7 caracteres no pueden superar "Floja"
 
     return score, feedback
 
